@@ -1,0 +1,47 @@
+
+initialisation :
+
+w = torch.empty((data_train.shape[1], label_train.shape[1]), dtype=torch.float)
+
+w est de taille (784,10) 784 lignes = 28*28 pour chaque pixels et 10 colonnes pour représenter le chiffre lu
+
+b = torch.empty((1, label_train.shape[1]), dtype=torch.float)
+
+b est de taille (1,10) 1 lignes et 10 colonnes correspond à un neurone de sortie 
+
+entrainement :
+
+x = data_train[indices[i:i + batch_size]]
+
+x est de taille (5,784) c'est 5 images représentés avec leur 784 pixels
+
+y = torch.mm(x, w) + b
+
+y est de taille (5,10) dû au produit matriciel lignes_x = 5  colonnes_w = 10
+
+t = label_train[indices[i:i + batch_size]]
+
+t est de taille (63000,10) le nombre d’images pour l’entraînement et leurs vrais labels.
+
+w += eta * torch.mm(x.T, grad)
+
+w est de taille (784,10) grâce au produit matriciel x.t * grad
+
+test :
+
+x = data_test[i:i + 1]
+
+x est de taille(1,784) prend à chaque fois une image parmi les 7000 du test avec ses 784 pixels
+
+y = torch.mm(x, w) + b
+
+y est de taille (1,10) avec le produit matriciel : les sorties de neurones de l'image
+
+t = label_test[i:i + 1]
+
+t est de taille (1,10) une image test prit avec 10 labels
+
+
+
+
+
