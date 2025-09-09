@@ -200,4 +200,156 @@ La configuration optimale trouvée est **hidden_size=256, lr=0.001, batch_size=3
 
 
 # Part 3: Deep network
+
+## Implémentation du deep network
+
+J'ai implémenté un MLP avec **au moins deux couches cachées** en utilisant les outils PyTorch :
+
+**Architecture flexible :** Construction dynamique avec `nn.Sequential` permettant de spécifier une liste de tailles de couches cachées.
+
+**Outils PyTorch utilisés :**
+- `nn.Sequential` pour la construction dynamique du réseau
+- `nn.Linear` pour les couches fully-connected
+- `nn.ReLU` comme fonction d'activation entre les couches cachées
+- `nn.CrossEntropyLoss` comme fonction de perte
+- `optim.Adam` comme optimiseur
+- `DataLoader` pour le chargement par batch
+
+## Méthodologie pour trouver les hyperparamètres
+
+### Stratégie adaptée à la puissance computationnelle
+**Choix : 11 expériences au total** (même approche que shallow network)
+- **15 époques par test** pour équilibrer temps/performance
+- **Tests séquentiels** d'un paramètre à la fois
+- **Architectures représentatives** : 5 architectures (2-3 couches), 3 learning rates, 3 batch sizes
+- **Durée réelle mesurée** : 3.6 minutes au total, moyenne de 19.7s par expérience
+
+### Justification des tests choisis
+- **Architecture** : Test principal car c'est la nouveauté par rapport au shallow network
+- **Learning rate** et **batch size** : Reprise des gammes optimales du shallow network
+- **Contrainte temporelle** : 3.6 minutes acceptable pour cette étude comparative
+
+## Résultats expérimentaux
+
+### Test initial
+```
+Test avec hidden_layers=[256, 128], lr=0.001, batch_size=64
+Epoch  1/15 | Train Acc:  91.22% | Val Acc:  94.64% | Test Acc:  95.29% | Time: 1.1s
+Epoch  4/15 | Train Acc:  98.18% | Val Acc:  97.22% | Test Acc:  97.86% | Time: 1.1s
+Epoch  7/15 | Train Acc:  99.19% | Val Acc:  97.76% | Test Acc:  97.80% | Time: 1.1s
+Epoch 10/15 | Train Acc:  99.48% | Val Acc:  97.75% | Test Acc:  97.97% | Time: 1.1s
+Epoch 13/15 | Train Acc:  99.57% | Val Acc:  98.06% | Test Acc:  98.07% | Time: 1.1s
+Epoch 15/15 | Train Acc:  99.63% | Val Acc:  97.39% | Test Acc:  97.87% | Time: 1.1s
+
+Résultats de base: Val=98.06%, Test=97.87% | Durée: 17.3s
+```
+
+### Recherche d'hyperparamètres
+
+#### 1. Influence de l'architecture (Section 1: 106.4s)
+| Architecture | Structure | Validation Acc | Test Acc | Temps |
+|--------------|-----------|----------------|----------|-------|
+| 1 | 784 → 128→64 → 10 | 97.71% | 97.79% | 14.8s |
+| 2 | 784 → 256→128 → 10 | 98.05% | 98.06% | 17.3s |
+| 3 | 784 → 512→256 → 10 | 98.03% | 98.31% | 25.5s |
+| **4** | **784 → 256→128→64 → 10** | **98.13%** | **98.03%** | **19.3s** |
+| 5 | 784 → 512→256→128 → 10 | 97.99% | 98.21% | 29.3s |
+
+#### 2. Influence du learning rate (Section 2: 52.4s)
+| Learning Rate | Validation Acc | Test Acc | Temps |
+|---------------|----------------|----------|-------|
+| 0.0001 | 97.10% | 97.23% | 17.1s |
+| **0.001** | **97.88%** | **97.73%** | **17.4s** |
+| 0.01 | 97.22% | 97.43% | 17.9s |
+
+#### 3. Influence du batch size (Section 3: 57.6s)
+| Batch Size | Validation Acc | Test Acc | Temps |
+|------------|----------------|----------|-------|
+| **32** | **97.89%** | **98.21%** | 28.1s |
+| 64 | 97.79% | 98.01% | 17.0s |
+| 128 | 97.84% | 97.69% | 12.4s |
+
+### Résumé complet des expériences
+| Paramètre | Valeur | Validation | Test | Temps |
+|-----------|--------|------------|------|-------|
+| architecture | 128→64 | 97.71% | 97.79% | 14.8s |
+| architecture | 256→128 | 98.05% | 98.06% | 17.3s |
+| architecture | 512→256 | 98.03% | 98.31% | 25.5s |
+| architecture | **256→128→64** | **98.13%** | **98.03%** | **19.3s** |
+| architecture | 512→256→128 | 97.99% | 98.21% | 29.3s |
+| lr | 0.0001 | 97.10% | 97.23% | 17.1s |
+| lr | **0.001** | **97.88%** | **97.73%** | **17.4s** |
+| lr | 0.01 | 97.22% | 97.43% | 17.9s |
+| batch_size | **32** | **97.89%** | **98.21%** | 28.1s |
+| batch_size | 64 | 97.79% | 98.01% | 17.0s |
+| batch_size | 128 | 97.84% | 97.69% | 12.4s |
+
+## Meilleur résultat
+- **Architecture optimale** : 256→128→64 (3 couches cachées)
+- **Validation accuracy** : 98.13%
+- **Test accuracy** : 98.03%
+- **Temps d'entraînement** : 19.3s
+
+## Bilan temporel
+- **Moyenne par expérience** : 19.7s
+- **Temps total** : 216.4s (3.6 minutes)
+
+## Analyse de l'influence de chaque hyperparamètre
+
+### 1. Architecture (nombre et taille des couches cachées) - Impact : +0.42%
+**Observations clés :**
+- **2 couches vs 3 couches** : Pas de différence significative (98.05% vs 98.13%)
+- **Taille optimale** : 256→128→64 légèrement supérieur à 256→128
+- **Réseaux très profonds** : 512→256→128 ne surpasse pas les architectures plus simples (97.99%)
+- **Coût computationnel** : Corrélation directe avec la complexité (14.8s à 29.3s)
+
+**Explication** : Pour MNIST, l'ajout de couches n'apporte qu'un gain marginal. La profondeur supplémentaire n'est pas cruciale pour ce dataset relativement simple.
+
+### 2. η (Learning Rate) - Impact : ±0.78%
+- **lr=0.0001** : 97.10% → **Apprentissage trop lent** même avec plus de couches
+- **lr=0.001** : 97.88% → **Optimal**, cohérent avec shallow network
+- **lr=0.01** : 97.22% → **Instabilité** malgré la profondeur du réseau
+
+**Explication** : Le learning rate optimal reste similaire au shallow network. La profondeur n'affecte pas fondamentalement ce hyperparamètre.
+
+### 3. Batch Size - Impact : +0.20%
+- **batch=32** : 97.89% → **Optimal** mais plus coûteux (28.1s)
+- **batch=64** : 97.79% → **Bon compromis** temps/performance (17.0s)
+- **batch=128** : 97.84% → **Plus rapide** (12.4s) avec performance correcte
+
+**Explication** : Tendance similaire au shallow network, avec un léger avantage pour les petits batchs.
+
+## Comparaison avec le shallow network
+
+### Performances
+- **Shallow network (Part 2)** : 98.14% test (meilleur cas)
+- **Deep network (Part 3)** : 98.03% test (meilleur cas)
+- **Différence** : -0.11% (non significative)
+
+### Temps de calcul
+- **Shallow network** : 14.8s par expérience en moyenne
+- **Deep network** : 19.7s par expérience en moyenne
+- **Surcoût** : +33% de temps pour un gain négligeable
+
+## Conclusion
+
+Le deep network n'apporte **pas d'amélioration significative** par rapport au shallow network sur MNIST. La meilleure architecture (256→128→64) atteint 98.13% en validation et 98.03% sur le test, soit des performances comparables au shallow network (98.14% test) mais avec un coût computationnel supérieur (+33% de temps).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 # Part 4: CNN
