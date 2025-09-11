@@ -1,5 +1,3 @@
-Voici la version révisée sans les adverbes et exagérations :
-
 # projet_M2_deep_learning
 # INTRODUCTION TO DEEP LEARNING
     - Amine ITJI (p2018984)
