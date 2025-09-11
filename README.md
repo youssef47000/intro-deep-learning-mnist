@@ -337,20 +337,187 @@ Résultats de base: Val=98.06%, Test=97.87% | Durée: 17.3s
 Le deep network n'apporte **pas d'amélioration significative** par rapport au shallow network sur MNIST. La meilleure architecture (256→128→64) atteint 98.13% en validation et 98.03% sur le test, soit des performances comparables au shallow network (98.14% test) mais avec un coût computationnel supérieur (+33% de temps).
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 # Part 4: CNN
+
+## Implémentation du CNN
+
+J'ai implémenté **deux architectures CNN** adaptées aux images MNIST en utilisant les outils PyTorch :
+
+### Architectures implémentées
+
+#### 1. **LeNet-5 inspiré** (Architecture classique)
+```
+Structure : 1 -> Conv2d(6) -> MaxPool -> Conv2d(16) -> MaxPool -> FC(120) -> FC(84) -> FC(10)
+- Conv1: 1→6 channels, kernel 5x5, padding 2 (28x28 → 28x28)
+- MaxPool1: 28x28 → 14x14
+- Conv2: 6→16 channels, kernel 5x5 (14x14 → 10x10)  
+- MaxPool2: 10x10 → 5x5
+- FC1: 16×5×5=400 → 120
+- FC2: 120 → 84
+- FC3: 84 → 10 classes
+```
+
+#### 2. **CNN Simple** (Architecture moderne)
+```
+Structure : 1 -> Conv2d(32) -> MaxPool -> Conv2d(64) -> MaxPool -> FC(128) -> FC(10)
+- Conv1: 1→32 channels, kernel 3x3, padding 1 (28x28 → 28x28)
+- MaxPool1: 28x28 → 14x14
+- Conv2: 32→64 channels, kernel 3x3, padding 1 (14x14 → 14x14)
+- MaxPool2: 14x14 → 7x7
+- FC1: 64×7×7=3136 → 128
+- FC2: 128 → 10 classes
+```
+
+### Transformation cruciale des données
+**Point clé** : Conversion du format vectoriel en format image
+```python
+# Transformation: [N, 784] -> [N, 1, 28, 28]
+data_train = data_train.view(-1, 1, 28, 28)
+data_test = data_test.view(-1, 1, 28, 28)
+```
+
+### Outils PyTorch utilisés
+- `nn.Conv2d` pour les couches convolutionnelles
+- `nn.MaxPool2d` pour le pooling
+- `F.relu` comme fonction d'activation
+- `nn.Dropout(0.5)` pour la régularisation
+- `nn.CrossEntropyLoss` comme fonction de perte
+- `optim.Adam` comme optimiseur
+
+## Méthodologie et justification de l'approche
+
+### Contraintes computationnelles
+- **5 époques** pour les tests d'architecture (vs 10-15 pour les autres tests)
+- **Approche séquentielle** : test d'un paramètre à la fois
+- **8 expériences au total** adaptées à la puissance de calcul disponible
+- **Durée réelle** : 4.7 minutes au total, moyenne de 35.0s par expérience
+
+### Choix des architectures testées
+- **LeNet-5** : Architecture historique de référence pour MNIST
+- **CNN Simple** : Version modernisée avec plus de filtres (32→64 vs 6→16)
+- **Justification** : Test de l'impact de la complexité et du nombre de paramètres
+
+## Résultats expérimentaux
+
+### Test initial (LeNet-5, 15 époques)
+```
+Transformation des données: [N, 784] -> [N, 1, 28, 28]
+Train shape: torch.Size([63000, 1, 28, 28]), Test shape: torch.Size([7000, 1, 28, 28])
+
+Epoch  1/15 | Train Acc:  85.52% | Val Acc:  96.24% | Test Acc:  96.91% | Time: 2.9s
+Epoch  4/15 | Train Acc:  97.38% | Val Acc:  98.09% | Test Acc:  98.51% | Time: 3.2s
+Epoch  7/15 | Train Acc:  98.25% | Val Acc:  98.65% | Test Acc:  98.94% | Time: 3.2s
+Epoch 10/15 | Train Acc:  98.57% | Val Acc:  98.71% | Test Acc:  99.07% | Time: 3.2s
+Epoch 15/15 | Train Acc:  98.87% | Val Acc:  99.03% | Test Acc:  99.10% | Time: 3.2s
+
+Résultats CNN de base: Val=99.03%, Test=99.10% | Durée: 48.9s
+```
+
+### Recherche d'hyperparamètres
+
+#### 1. Influence de l'architecture CNN (Section 1: 77.5s)
+| Modèle | Validation Acc | Test Acc | Temps | Commentaire |
+|--------|----------------|----------|-------|-------------|
+| **CNN Simple** | **99.02%** | **98.94%** | 60.3s | Plus de filtres (32→64) |
+| LeNet-5 | 98.36% | 98.77% | 17.1s | Architecture classique (6→16) |
+
+#### 2. Influence du learning rate (Section 2: 97.5s)
+| Learning Rate | Validation Acc | Test Acc | Temps |
+|---------------|----------------|----------|-------|
+| 0.0001 | 97.22% | 97.64% | 33.1s |
+| **0.001** | **98.97%** | **98.80%** | 32.7s |
+| 0.01 | 98.31% | 98.43% | 31.6s |
+
+#### 3. Influence du batch size (Section 3: 104.7s)
+| Batch Size | Validation Acc | Test Acc | Temps |
+|------------|----------------|----------|-------|
+| 32 | 98.79% | 98.94% | 43.0s |
+| **64** | **98.86%** | **98.87%** | 32.3s |
+| 128 | 98.69% | 98.83% | 29.3s |
+
+### Résumé complet des expériences CNN
+| Paramètre | Valeur | Validation | Test | Temps |
+|-----------|--------|------------|------|-------|
+| model_type | **simple** | **99.02%** | **98.94%** | 60.3s |
+| model_type | lenet5 | 98.36% | 98.77% | 17.1s |
+| lr | 0.0001 | 97.22% | 97.64% | 33.1s |
+| lr | **0.001** | **98.97%** | **98.80%** | 32.7s |
+| lr | 0.01 | 98.31% | 98.43% | 31.6s |
+| batch_size | 32 | 98.79% | 98.94% | 43.0s |
+| batch_size | **64** | **98.86%** | **98.87%** | 32.3s |
+| batch_size | 128 | 98.69% | 98.83% | 29.3s |
+
+## Meilleur résultat CNN
+- **Architecture optimale** : CNN Simple
+- **Validation accuracy** : 99.02%
+- **Test accuracy** : 98.94%
+- **Temps d'entraînement** : 60.3s
+
+## Bilan temporel CNN
+- **Moyenne par expérience** : 35.0s
+- **Temps total** : 279.6s (4.7 minutes)
+
+## Analyse de l'influence de chaque hyperparamètre
+
+### 1. Architecture (Simple vs LeNet-5) - Impact : +0.66%
+**Observations clés :**
+- **CNN Simple** : 99.02% validation → **Supérieur** grâce à plus de filtres (32→64)
+- **LeNet-5** : 98.36% validation → **3.5× plus rapide** (17.1s vs 60.3s)
+- **Trade-off** : Performance vs efficacité computationnelle
+
+**Explication** : Le CNN Simple avec plus de filtres capture mieux les features complexes, mais au coût d'un temps de calcul significativement plus élevé.
+
+### 2. η (Learning Rate) - Impact : ±1.75%
+- **lr=0.0001** : 97.22% → **Convergence lente**, même avec les convolutions
+- **lr=0.001** : 98.97% → **Optimal**, cohérent avec MLP mais impact plus marqué
+- **lr=0.01** : 98.31% → **Instabilité**, dégradation plus prononcée qu'avec MLP
+
+**Explication** : Les CNN sont plus sensibles au learning rate que les MLP. L'optimisation est plus complexe avec les convolutions.
+
+### 3. Batch Size - Impact : +0.17%
+- **batch=32** : 98.79% → Performance correcte mais plus lent (43.0s)
+- **batch=64** : 98.86% → **Optimal**, bon équilibre temps/performance (32.3s)
+- **batch=128** : 98.69% → Plus rapide (29.3s) avec légère baisse
+
+**Explication** : Impact similaire aux MLP mais moins prononcé. Les CNN sont plus robustes aux variations de batch size.
+
+## Comparaison avec les réseaux précédents
+
+### Performances finales
+| Architecture | Meilleure Validation Acc | Meilleure Test Acc | Temps moyen |
+|--------------|-------------------------|-------------------|-------------|
+| **Perceptron** | ~92% | ~92% | ~5s |
+| **Shallow Network** | 97.94% | 98.14% | 14.8s |
+| **Deep Network** | 98.13% | 98.03% | 19.7s |
+| **CNN** | **99.02%** | **98.94%** | 35.0s |
+
+### Analyse comparative
+- **Gain CNN vs MLP** : +0.89% à +1.08% de précision
+- **Surcoût temporel** : +78% par rapport au Deep Network
+- **Convergence** : Plus rapide (99% dès epoch 15 vs plateau MLP à 98%)
+
+## Justification de l'approche choisie
+
+### Pourquoi LeNet-5 comme base ?
+- **Architecture éprouvée** : Conçue spécifiquement pour MNIST
+- **Complexité maîtrisée** : Nombre de paramètres raisonnable
+- **Référence historique** : Permet comparaison avec la littérature
+
+### Adaptations apportées
+- **CNN Simple** : Modernisation avec plus de filtres
+- **Dropout 0.5** : Régularisation pour éviter l'overfitting
+- **Adam optimizer** : Plus efficace que SGD pour ce type d'architecture
+
+### Limitations computationnelles prises en compte
+- **5 époques** pour tests architecture (compromis temps/qualité)
+- **15 époques** maximum pour tests détaillés
+- **Pas de data augmentation** : Trade-off simplicité/performance
+
+## Conclusion CNN
+
+Le CNN apporte une **amélioration significative** (+0.89% à +1.08%) par rapport aux MLP sur MNIST, confirmant l'avantage des convolutions pour les données visuelles. L'architecture **CNN Simple** (99.02% validation, 98.94% test) surpasse légèrement **LeNet-5** mais nécessite 3.5× plus de temps de calcul.
+
+**Configuration optimale identifiée** : CNN Simple, lr=0.001, batch_size=64
+**Trade-off principal** : Performance vs temps de calcul (CNN Simple 3.5× plus lent que LeNet-5 pour +0.66% de précision)
+
+Les CNN démontrent leur supériorité pour la classification d'images, même sur un dataset relativement simple comme MNIST, justifiant leur adoption malgré le surcoût computationnel.
