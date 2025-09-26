@@ -1,3 +1,5 @@
+Voici la version révisée sans les adverbes et exagérations :
+
 # projet_M2_deep_learning
 # INTRODUCTION TO DEEP LEARNING
     - Amine ITJI (p2018984)
@@ -257,101 +259,120 @@ Résultats de base: Val=98.06% (maximum), Test=97.87% | Durée: 17.3s
 
 Le deep network n'apporte pas d'amélioration par rapport au shallow network sur MNIST, avec un surcoût de 33% pour un gain négligeable.
 
-# Part 4: CNN
 
-## Implémentation du CNN
 
-Deux architectures CNN sont implémentées et comparées pour la classification MNIST. La transformation des données vectorielles [784] vers le format image [1, 28, 28] permet l'utilisation des convolutions.
 
-### Architectures implémentées
 
-#### 1. LeNet-5 inspiré (Architecture classique)
-```
-1 → Conv2d(6) → MaxPool → Conv2d(16) → MaxPool → FC(120) → FC(84) → FC(10)
-- Conv1: 1→6 channels, kernel 5x5, padding 2 (28x28 → 28x28)
-- MaxPool1: 28x28 → 14x14
-- Conv2: 6→16 channels, kernel 5x5 (14x14 → 10x10)
-- MaxPool2: 10x10 → 5x5
-- FC: 400 → 120 → 84 → 10
-```
 
-#### 2. CNN Simple (Architecture moderne)
-```
-1 → Conv2d(32) → MaxPool → Conv2d(64) → MaxPool → FC(128) → FC(10)
-- Conv1: 1→32 channels, kernel 3x3, padding 1 (28x28 → 28x28)
-- MaxPool1: 28x28 → 14x14
-- Conv2: 32→64 channels, kernel 3x3, padding 1 (14x14 → 14x14)
-- MaxPool2: 14x14 → 7x7
-- FC: 3136 → 128 → 10
-```
 
-### Outils PyTorch utilisés
-- `nn.Conv2d` pour les couches convolutionnelles
-- `nn.MaxPool2d` pour le pooling
-- `F.relu` comme fonction d'activation
-- `nn.Dropout(0.5)` pour la régularisation
-- `nn.CrossEntropyLoss` et `optim.Adam`
 
-## Méthodologie
 
-**Contraintes de calcul :** 8 expériences au total, 5 époques pour tests d'architecture, 10 époques pour hyperparamètres.
 
-**Tests effectués :** 2 architectures, 3 learning rates, 3 batch sizes. Durée totale : 4.7 minutes (35.0s par expérience).
 
-## Résultats expérimentaux
 
-### Test initial (LeNet-5, 15 époques)
-```
-Transformation des données: [N, 784] -> [N, 1, 28, 28]
 
-Epoch  1/15 | Train Acc:  85.52% | Val Acc:  96.24% | Test Acc:  96.91%
-Epoch 15/15 | Train Acc:  98.87% | Val Acc:  99.03% | Test Acc:  99.10%
-Résultats CNN de base: Val=99.03%, Test=99.10% | Durée: 48.9s
-```
 
-### Recherche d'hyperparamètres
 
-#### 1. Architecture (Impact : +0.66%)
-| Modèle | Validation Acc | Test Acc | Temps |
-|--------|----------------|----------|-------|
-| **CNN Simple** | **99.02%** | **98.94%** | 60.3s |
-| LeNet-5 | 98.36% | 98.77% | 17.1s |
 
-#### 2. Learning Rate (Impact : ±1.75%)
-| Learning Rate | Validation Acc | Test Acc |
-|---------------|----------------|----------|
-| 0.0001 | 97.22% | 97.64% |
-| **0.001** | **98.97%** | **98.80%** |
-| 0.01 | 98.31% | 98.43% |
 
-#### 3. Batch Size (Impact : +0.17%)
-| Batch Size | Validation Acc | Test Acc |
-|------------|----------------|----------|
-| 32 | 98.79% | 98.94% |
-| **64** | **98.86%** | **98.87%** |
-| 128 | 98.69% | 98.83% |
 
-## Résultats optimaux
 
-**Configuration optimale :** CNN Simple, lr=0.001, batch_size=64
-- **Validation accuracy :** 99.02%
-- **Test accuracy :** 98.94%
-- **Temps d'entraînement :** 60.3s
 
-## Comparaison avec les architectures précédentes
 
-| Architecture | Meilleure Test Acc | Temps moyen |
-|--------------|-------------------|-------------|
-| Perceptron | ~92% | ~5s |
-| Shallow Network | 98.14% | 14.8s |
-| Deep Network | 98.03% | 19.7s |
-| **CNN** | **98.94%** | 35.0s |
 
-### Analyse comparative
-- **Gain CNN vs MLP :** +0.80% à +0.91% de précision
-- **Surcoût temporel :** +78% par rapport au Deep Network
-- **Trade-off :** CNN Simple 3.5× plus lent que LeNet-5 pour +0.66% de précision
 
-## Conclusion
 
-Les CNN démontrent leur efficacité pour la classification d'images avec une amélioration des performances sur MNIST. Le CNN Simple atteint les meilleures performances (99.02% validation) mais nécessite un temps de calcul plus élevé que LeNet-5.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+## Partie 4 : CNN (Convolutional Neural Network)
+
+### Implémentation
+
+On a implémenté deux architectures CNN à comparer. LeNet-5, avec deux couches convolutionnelles et trois couches fully connected, et un CNN simple avec deux convolutions et deux couches fully connected.
+
+LeNet-5 utilise les configurations suivantes :  
+- Conv1 : 1 canal → 6 cartes, kernel 5×5, padding 2, taille image maintenue à 28×28  
+- MaxPool2d réduit la taille à 14×14  
+- Conv2 : 6 → 16 cartes, kernel 5×5, taille réduite à 10×10  
+- MaxPool2d réduit à 5×5  
+- Fully connected : 400 → 120 → 84 → 10
+
+Le CNN simple utilise :  
+- Conv1 : 1 → 32 filtres, kernel 3×3, padding 1, taille 28×28  
+- MaxPool2d réduit à 14×14  
+- Conv2 : 32 → 64 filtres, kernel 3×3, padding 1, taille maintenue à 14×14  
+- MaxPool2d réduit à 7×7  
+- Fully connected : 3136 → 128 → 10
+
+On a appliqué ReLU, Dropout 0.5, CrossEntropyLoss et optimiseur Adam.
+
+### Méthodologie
+
+Les images sont transformées du format vecteur (784) au format image (1×28×28). On fait varier architecture, learning rate (0.0001, 0.001, 0.01) et batch sizes (32, 64, 128). Chaque configuration est testée sur validation puis évaluation test.
+
+### Résultats
+
+Le test initial avec LeNet-5 (lr=0.001, batch=64) donne à la 15e époque 99.04% de précision test, avec un temps total d'environ 59 secondes (dont 1.68s pour charger les données et 55.27s d'entraînement). Dès la première époque, la précision test est déjà à 97.44%.
+
+| Époque | Train Acc (%) | Val Acc (%) | Test Acc (%) | Temps (s) |
+|--------|---------------|-------------|--------------|-----------|
+| 1      | 87.09         | 97.16       | 97.44        | 6.2       |
+| 4      | 97.51         | 98.45       | 98.53        | 3.6       |
+| 7      | 98.29         | 98.73       | 98.71        | 3.5       |
+| 10     | 98.54         | 98.82       | 98.73        | 3.4       |
+| 13     | 98.93         | 98.97       | 98.96        | 3.4       |
+| 15     | 98.96         | 98.94       | 99.04        | 3.4       |
+
+En explorant les architectures, le CNN simple atteint 98.87% en test (batch=64, lr=0.001) après 5 époques, mais en 68.7 secondes d’entraînement, contre 98.40% en 19.4 secondes pour LeNet-5 (mêmes hyperparamètres).
+
+Pour l’influence du learning rate :  
+- lr=0.0001 → val=97.29%, test=97.79%, entraînement 36s  
+- lr=0.001 → val=98.87%, test=98.91%, temps 35.2s  
+- lr=0.01 → val=97.60%, test=97.64%, 34.5s
+
+La taille de batch montre un faible effet sur la précision finale, avec un léger avantage à batch=32 (val=98.98%, test=98.99%) contre batch=128 (val=98.75%, test=98.99%), le temps d’entraînement diminuant avec la taille du batch.
+
+| Paramètre     | Valeur | Validation Acc (%) | Test Acc (%) | Temps (s) |
+|---------------|---------|-------------------|-------------|-----------|
+| model_type    | simple  | 98.71             | 98.87       | 68.7      |
+| model_type    | lenet5  | 98.27             | 98.40       | 19.4      |
+| lr            | 0.0001  | 97.29             | 97.79       | 36.0      |
+| lr            | 0.001   | 98.87             | 98.91       | 35.2      |
+| lr            | 0.01    | 97.60             | 97.64       | 34.5      |
+| batch_size    | 32      | 98.98             | 98.99       | 49.6      |
+| batch_size    | 64      | 98.93             | 98.90       | 40.5      |
+| batch_size    | 128     | 98.75             | 98.99       | 31.5      |
+
+### Analyse
+
+On constate que LeNet-5 et CNN simple sont proches en précision, mais avec un compromis fort sur le temps d’entraînement : LeNet-5 est environ 3 fois plus rapide pour une différence de précision final d’environ 0.5%.
+
+Le learning rate 0.001 donne un bon équilibre entre stabilité et vitesse d’apprentissage. La taille de batch, elle, influence plus le temps que la précision.
