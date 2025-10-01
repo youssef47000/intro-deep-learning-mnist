@@ -1,9 +1,3 @@
-# coding: utf8
-# !/usr/bin/env python
-# ------------------------------------------------------------------------
-# Deep Network (MLP avec plusieurs couches cachées) pour MNIST avec visualisations
-# ------------------------------------------------------------------------
-
 import gzip, torch, time
 import torch.nn as nn
 import torch.optim as optim
