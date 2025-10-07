@@ -240,14 +240,14 @@ def train_and_test_final(config):
 #
 
 # --- TEST 1: LEARNING RATE ---
-# PARAM_TO_TEST = "learning_rate"
-# PARAM_NAME = "Learning Rate"
-# VALUES_TO_TEST = [0.0001, 0.0005, 0.001, 0.005, 0.01]
-# DEFAULT_CONFIG = {
-#     'hidden_size': 256,
-#     'batch_size': 50,
-#     'nb_epochs': 15
-# }
+PARAM_TO_TEST = "learning_rate"
+PARAM_NAME = "Learning Rate"
+VALUES_TO_TEST = [0.0001, 0.0005, 0.001, 0.005, 0.01]
+DEFAULT_CONFIG = {
+    'hidden_size': 256,
+    'batch_size': 50,
+    'nb_epochs': 15
+}
 
 
 # --- TEST 2: HIDDEN SIZE ---
@@ -272,14 +272,14 @@ def train_and_test_final(config):
 # }
 
 # --- TEST 4: NOMBRE D'ÉPOQUES ---
-PARAM_TO_TEST = "nb_epochs"
-PARAM_NAME = "Nombre d'Époques"
-VALUES_TO_TEST = [5, 10, 20, 40, 80]
-DEFAULT_CONFIG = {
-    'learning_rate': 0.001,
-    'hidden_size': 256,
-    'batch_size': 50
-}
+# PARAM_TO_TEST = "nb_epochs"
+# PARAM_NAME = "Nombre d'Époques"
+# VALUES_TO_TEST = [5, 10, 20, 40, 80]
+# DEFAULT_CONFIG = {
+#     'learning_rate': 0.001,
+#     'hidden_size': 256,
+#     'batch_size': 50
+# }
 
 # --- TEST UNIQUEMENT ---
 config_choisi = {
@@ -597,8 +597,8 @@ def plot_comparison_with_time(values, results, histories, training_times, all_ep
 if __name__ == "__main__":
 
     # Lance l’entraînement avec les hyperparamètres choisis
-    #train_and_test_final(config_choisi)
+    train_and_test_final(config_choisi)
 
     # Fonction pour lancer les tests à la recherche des meilleurs hyperparamètres
     # les tests à choisir ligne 247
-    run_comparison()
+    # run_comparison()
