@@ -138,6 +138,7 @@ def train_model(model, X_train, y_train, X_val, y_val):
         print(f"Epoch {epoch + 1}/{model.nb_epochs} | "
               f"Train Loss: {train_loss_avg:.4f} | Train Acc: {train_acc:.2f}% | "
               f"Val Loss: {val_loss_avg:.4f} | Val Acc: {val_acc:.2f}% ")
+    print("\n" + "-" * 80)
 
     # Supprimer la première époque pour éviter que le temps soit faussé à cause du chargement lors du premier entraînement.
     if len(epoch_times) > 1:
@@ -239,14 +240,14 @@ def train_and_test_final(config):
 #
 
 # --- TEST 1: LEARNING RATE ---
-PARAM_TO_TEST = "learning_rate"
-PARAM_NAME = "Learning Rate"
-VALUES_TO_TEST = [0.0001, 0.0005, 0.001, 0.005, 0.01]
-DEFAULT_CONFIG = {
-    'hidden_size': 256,
-    'batch_size': 50,
-    'nb_epochs': 15
-}
+# PARAM_TO_TEST = "learning_rate"
+# PARAM_NAME = "Learning Rate"
+# VALUES_TO_TEST = [0.0001, 0.0005, 0.001, 0.005, 0.01]
+# DEFAULT_CONFIG = {
+#     'hidden_size': 256,
+#     'batch_size': 50,
+#     'nb_epochs': 15
+# }
 
 
 # --- TEST 2: HIDDEN SIZE ---
@@ -271,14 +272,14 @@ DEFAULT_CONFIG = {
 # }
 
 # --- TEST 4: NOMBRE D'ÉPOQUES ---
-# PARAM_TO_TEST = "nb_epochs"
-# PARAM_NAME = "Nombre d'Époques"
-# VALUES_TO_TEST = [5, 10, 20, 40, 80]
-# DEFAULT_CONFIG = {
-#     'learning_rate': 0.001,
-#     'hidden_size': 256,
-#     'batch_size': 50
-# }
+PARAM_TO_TEST = "nb_epochs"
+PARAM_NAME = "Nombre d'Époques"
+VALUES_TO_TEST = [5, 10, 20, 40, 80]
+DEFAULT_CONFIG = {
+    'learning_rate': 0.001,
+    'hidden_size': 256,
+    'batch_size': 50
+}
 
 # --- TEST UNIQUEMENT ---
 config_choisi = {
@@ -418,7 +419,7 @@ def plot_comparison_with_time(values, results, histories, training_times, all_ep
     ax2.set_title('Train vs Val Accuracy (Train=ligne, Val=pointillés)', fontsize=14, fontweight='bold')
     ax2.legend(fontsize=7, loc='lower right', ncol=2)
     ax2.grid(True, alpha=0.3)
-    ax2.set_ylim(95, 100)
+    ax2.set_ylim(91, 100)
 
 
     # ----------------------------------- Graphique 3 : Convergence Loss----------------------------------------------
@@ -438,7 +439,7 @@ def plot_comparison_with_time(values, results, histories, training_times, all_ep
     ax3.set_title('Convergence Loss (Train=ligne, Val=pointillés, best)', fontsize=14, fontweight='bold')
     ax3.legend(fontsize=9, loc='upper right')
     ax3.grid(True, alpha=0.3)
-    ax3.set_ylim(0, 0.3)
+    ax3.set_ylim(0, 0.4)
 
     # Graphique 4 : validation
 
@@ -587,7 +588,7 @@ def plot_comparison_with_time(values, results, histories, training_times, all_ep
 
     plt.tight_layout()
 
-    filename = f'comparison_{PARAM_TO_TEST}_with_time.png'
+    filename = f'comparison_{PARAM_TO_TEST}.png'
     plt.savefig(filename, dpi=150, bbox_inches='tight')
     print(f"Graphique sauvegardé: {filename}")
     plt.show()
@@ -596,8 +597,8 @@ def plot_comparison_with_time(values, results, histories, training_times, all_ep
 if __name__ == "__main__":
 
     # Lance l’entraînement avec les hyperparamètres choisis
-    train_and_test_final(config_choisi)
+    #train_and_test_final(config_choisi)
 
     # Fonction pour lancer les tests à la recherche des meilleurs hyperparamètres
     # les tests à choisir ligne 247
-    # run_comparison()
+    run_comparison()
