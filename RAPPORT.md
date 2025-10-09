@@ -103,17 +103,17 @@ On commence par tester le learning rate sur les données de validation avec les 
 
 #### Validation accuracy
 
-On observe que le meilleur taux d'accuracy est obtenu avec un learning rate de 0.001. Plus on s'éloigne de cette valeur plus les performances diminuent ce qui forme une courbe en cloche.
+On observe que le meilleur taux d'accuracy est obtenu avec un learning rate de 0.001. Plus on s'éloigne de cette valeur plus les performances diminuent ce qui forme une courbe en cloche (Voir le graphique 1 ci-dessous : impact du learning rate).
 
-Avec un learning rate très faible 0.0001, l'apprentissage est lent et progressif, il faut plus d'époques pour converger. À l'inverse, un learning rate trop élevé 0.01 fait converger rapidement (dès la 7ᵉ époque), mais la performance stagne et n'atteint pas le niveau des autres courbes.
+Avec un learning rate très faible 0.0001, l'apprentissage est lent et progressif, il faut plus d'époques pour converger. À l'inverse, un learning rate trop élevé 0.01 fait converger rapidement (dès la 7ᵉ époque), mais la performance stagne et n'atteint pas le niveau des autres courbes (Voir le graphique 4 ci-dessous : courbes de validation).
 
 #### Loss training et validation
 
-On observe un léger sur-apprentissage pour un learning rate de 0.01, et dans une moindre mesure pour 0.005. La loss de validation est beaucoup plus élevée que la loss d'entraînement. Cela indique que le modèle a trop appris les détails des données d'entraînement et n'arrive pas à bien généraliser aux nouvelles données. Même si l'accuracy reste relativement correcte, le modèle fait parfois de grosses erreurs de prédictions sur certaines images de validation, ce qui fait augmenter fortement la loss.
+On observe un léger sur-apprentissage pour un learning rate de 0.01, et dans une moindre mesure pour 0.005. La loss de validation est beaucoup plus élevée que la loss d'entraînement. Cela indique que le modèle a trop appris les détails des données d'entraînement et n'arrive pas à bien généraliser aux nouvelles données. Même si l'accuracy reste relativement correcte, le modèle fait parfois de grosses erreurs de prédictions sur certaines images de validation, ce qui fait augmenter fortement la loss (Voir le graphique 3 ci-dessous : convergence loss).
 
 #### Performance temps
 
-Concernant le temps d'entraînement, nous avons observé une très faible augmentation (de l'ordre de quelques millisecondes) lorsque le learning rate augmente. L'impact sur le temps total est donc négligeable.
+Concernant le temps d'entraînement, nous avons observé une très faible augmentation (de l'ordre de quelques millisecondes) lorsque le learning rate augmente. L'impact sur le temps total est donc négligeable (Voir le graphique 6 ci-dessous : temps d'entrainement total).
 
 #### Conclusion learning rate
 
@@ -135,15 +135,15 @@ On teste hidden_size sur les données de validation et d'entrainement avec les v
 
 #### Validation accuracy
 
-On observe qu'il n'y a pas de grande différence d'accuracy à partir d'une taille de couche cachée de 256 neurones. Une couche trop petite (par exemple 64) limite la capacité d'apprentissage du modèle, ce qui réduit logiquement l'accuracy. En revanche, augmenter la taille au-delà d'un certain point n'apporte presque plus d'amélioration, tout en augmentant le temps d'entraînement. Il faut donc choisir une taille de couche cachée ni trop petite, ni trop grande. 256 semble être le bon compromis.
+On observe qu'il n'y a pas de grande différence d'accuracy à partir d'une taille de couche cachée de 256 neurones (Voir le graphique 1 ci-dessous : impact de hidden size). Une couche trop petite (par exemple 64) limite la capacité d'apprentissage du modèle, ce qui réduit logiquement l'accuracy. En revanche, augmenter la taille au-delà d'un certain point n'apporte presque plus d'amélioration, tout en augmentant le temps d'entraînement. Il faut donc choisir une taille de couche cachée ni trop petite, ni trop grande. 256 semble être le bon compromis.
 
 #### Loss training et validation
 
-On peut voir qu'une couche trop grande n'a pas beaucoup d'impact sur le sur-apprentissage, contrairement à un learning rate trop élevé.
+On peut voir qu'une couche trop grande n'a pas beaucoup d'impact sur le sur-apprentissage, contrairement à un learning rate trop élevé (Voir le graphique 3 ci-dessous : convergence loss).
 
 #### Performance temps
 
-On voit que plus la couche cachée est grande, plus le temps d'entraînement augmente. À partir de 1024 neurones, le temps monte rapidement, avec environ 8 secondes d'écart entre une couche de 64 et une de 1024 neurones. Il faut donc trouver un bon compromis entre la taille de la couche et le temps d'entraînement, surtout si le dataset est plus grand et nécessite plus d'itérations. Une couche trop grande n'apporte pas forcément plus d'efficacité et peut augmenter inutilement le temps d'apprentissage.
+On voit que plus la couche cachée est grande, plus le temps d'entraînement augmente. À partir de 1024 neurones, le temps monte rapidement, avec environ 8 secondes d'écart entre une couche de 64 et une de 1024 neurones. Il faut donc trouver un bon compromis entre la taille de la couche et le temps d'entraînement, surtout si le dataset est plus grand et nécessite plus d'itérations. Une couche trop grande n'apporte pas forcément plus d'efficacité et peut augmenter inutilement le temps d'apprentissage (Voir le graphique 6 ci-dessous : temps d'entrainement total).
 
 #### Conclusion hidden_size
 
@@ -166,15 +166,15 @@ On teste batch_size sur les données de validation et d'entrainement avec les va
 
 #### Accuracy validation et training
 
-On peut voir que le batch size influence très peu l'accuracy, sûrement parce que le dataset MNIST est petit. Les résultats sont très proches quelle que soit la taille du batch. On remarque une légère amélioration avec les petits batchs, car les gradients sont mis à jour plus souvent et sont plus bruités, ce qui aide le modèle à mieux généraliser. En revanche, cela rend l'apprentissage un peu plus instable, comme on peut le voir sur les courbes de validation, les petits batchs qui présentent de petites fluctuations, contrairement aux courbes des grands batchs, plus stables.
+On peut voir que le batch size influence très peu l'accuracy, sûrement parce que le dataset MNIST est petit. Les résultats sont très proches quelle que soit la taille du batch (Voir le graphique 1 ci-dessous : impact de batch size). On remarque une légère amélioration avec les petits batchs, car les gradients sont mis à jour plus souvent et sont plus bruités, ce qui aide le modèle à mieux généraliser. En revanche, cela rend l'apprentissage un peu plus instable, comme on peut le voir sur les courbes de validation (Voir le graphique 4 ci-dessous : courbes de validation), les petits batchs qui présentent de petites fluctuations, contrairement aux courbes des grands batchs, plus stables.
 
 #### Loss training et validation
 
-On observe, comme mentionné plus haut, que les petits batchs sont plus instables contrairement aux grands batchs.
+On observe, comme mentionné plus haut, que les petits batchs sont plus instables contrairement aux grands batchs .
 
 #### Performance temps
 
-On observe que plus le batch est petit, plus le temps d'entraînement augmente, car le nombre de calculs de gradients par époque est plus élevé. Il est donc judicieux de choisir un batch ni trop petit, afin d'assurer à la fois stabilité et bonne généralisation.
+On observe que plus le batch est petit, plus le temps d'entraînement augmente, car le nombre de calculs de gradients par époque est plus élevé (Voir le graphique 6 ci-dessous : temps d'entrainement total). Il est donc judicieux de choisir un batch ni trop petit, afin d'assurer à la fois stabilité et bonne généralisation.
 
 #### Conclusion batch_size
 
@@ -194,13 +194,13 @@ L'**impact mesuré est de +0.33%**.
 
 On teste nb_epochs sur les données de validation et d'entrainement avec les valeurs suivantes : [5, 10, 20, 40, 80].
 
-#### Accuracy validation et training
+#### Accuracy validation,training et loss
 
-On observe qu'à partir de 20 époques, la loss de validation augmente lentement et devient plus instable, tandis que l'accuracy reste élevée. Cela montre que le modèle devient trop confiant : il fait peu d'erreurs, mais celles-ci sont plus importantes, ce qui fait augmenter la loss. Comme l'accuracy reste stable (voire s'améliore très légèrement), on peut conclure que le modèle a déjà convergé avant la 20ᵉ époque.
+On observe qu'à partir de 20 époques, la loss de validation augmente lentement et devient plus instable, tandis que l'accuracy reste élevée (Voir les graphiques 2,3 et 4 ci-dessous). Cela montre que le modèle devient trop confiant : il fait peu d'erreurs, mais celles-ci sont plus importantes, ce qui fait augmenter la loss. Comme l'accuracy reste stable (voire s'améliore très légèrement), on peut conclure que le modèle a déjà convergé avant la 20ᵉ époque.
 
 #### Performance temps
 
-On constate qu'à chaque fois qu'on double le nombre d'époques, le temps d'entraînement double également. Il est donc inutile d'en faire trop, au risque de perdre du temps et de favoriser le sur-apprentissage.
+On constate qu'à chaque fois qu'on double le nombre d'époques, le temps d'entraînement double également (Voir le graphique 6 ci-dessous : temps d'entrainement total). Il est donc inutile d'en faire trop, au risque de perdre du temps et de favoriser le sur-apprentissage.
 
 #### Conclusion nb_epochs
 
