@@ -42,7 +42,7 @@ def load_data():
     """Charges les données de mnist.pkl.gz"""
 
     print("Chargement des données MNIST")
-    ((data_train, label_train), (data_test, label_test)) = torch.load(gzip.open('../data/mnist.pkl.gz'))
+    ((data_train, label_train), (data_test, label_test)) = torch.load(gzip.open('../dataset/mnist.pkl.gz'))
 
     # decoupage 80 % pour l'entrainement et 20% pour validation
     n_train = len(data_train)

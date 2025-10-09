@@ -67,7 +67,7 @@ def train_and_evaluate_cnn(model_type='lenet5', lr=0.001, batch_size=64, nb_epoc
     
     # Chargement des données
     data_start = time.time()
-    ((data_train, label_train), (data_test, label_test)) = torch.load(gzip.open('dataset/mnist.pkl.gz'))
+    ((data_train, label_train), (data_test, label_test)) = torch.load(gzip.open('../dataset/mnist.pkl.gz'))
     data_time = time.time() - data_start
     
     # TRANSFORMATION CRUCIALE : 784D -> 28x28 images
@@ -316,7 +316,7 @@ def visualize_sample_images():
     print("=== VISUALISATION DES DONNÉES MNIST ===")
     
     # Chargement des données
-    ((data_train, label_train), (data_test, label_test)) = torch.load(gzip.open('dataset/mnist.pkl.gz'))
+    ((data_train, label_train), (data_test, label_test)) = torch.load(gzip.open('../dataset/mnist.pkl.gz'))
     
     # Conversion labels one-hot vers indices
     train_labels_idx = torch.argmax(label_train, dim=1)

@@ -36,7 +36,7 @@ def train_and_evaluate(hidden_layers=[256, 128], lr=0.001, batch_size=64, nb_epo
     
     # Chargement des données
     data_start = time.time()
-    ((data_train, label_train), (data_test, label_test)) = torch.load(gzip.open('dataset/mnist.pkl.gz'))
+    ((data_train, label_train), (data_test, label_test)) = torch.load(gzip.open('../dataset/mnist.pkl.gz'))
     data_time = time.time() - data_start
     
     # Conversion des labels one-hot en indices de classe pour CrossEntropyLoss
