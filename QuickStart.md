@@ -62,3 +62,8 @@ python deep_network.py
 # Part 4 - CNN
 python cnn_network.py
 ```
+
+### Generate PDF 
+```bash
+pandoc RAPPORT.md -o RAPPORT.pdf --css style.css --pdf-engine=weasyprint --metadata title=""
+```
