@@ -33,8 +33,6 @@ Le code source dans `src/` propose trois modèles distincts :
 
 ## Synthèse des Résultats
 
-### 📊 Synthèse des Résultats
-
 Nos expériences ont permis d'obtenir les précisions suivantes sur le jeu de test :
 
 | Modèle | Configuration Optimale | Précision (Test) | Paramètres | Conclusion |
